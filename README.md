@@ -3,7 +3,7 @@ Extract annotations from source-code comments.
 
 # Usage
 
-```
+```python
 # file.py
 
 class Something(Experiment):
@@ -17,7 +17,7 @@ class Something(Experiment):
         ...
 ```
 
-```
+```bash
 $ anot file.py --treesitter --tags hypothesis,note,todo --yaml
 
 annotations:
