@@ -1,6 +1,7 @@
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
-use crate::annotation::{Annotation, Location};
+use crate::annotation::{Annotation, Location, SyntaxContext};
 use crate::input::FileType;
 use crate::parser;
 use crate::render::{JsonAdapter, RenderAdapter, YamlAdapter};
@@ -17,6 +18,19 @@ struct PyLocation {
     inline: bool,
 }
 
+#[pyclass(name = "CitationContext")]
+#[derive(Clone)]
+struct PyCitationContext {
+    #[pyo3(get)]
+    node_type: String,
+    #[pyo3(get)]
+    parent_type: String,
+    #[pyo3(get)]
+    associated_name: Option<String>,
+    #[pyo3(get)]
+    variable_name: Option<String>,
+}
+
 #[pyclass(name = "Annotation")]
 #[derive(Clone)]
 struct PyAnnotation {
@@ -26,15 +40,18 @@ struct PyAnnotation {
     content: String,
     #[pyo3(get)]
     location: PyLocation,
+    #[pyo3(get)]
+    context: PyCitationContext,
 }
 
 #[pymethods]
 impl PyAnnotation {
     #[new]
-    fn new(kind: String, content: String) -> Self {
+    fn new(kind: String, content: String, context: PyCitationContext) -> Self {
         Self {
             kind,
             content,
+            context,
             location: PyLocation {
                 file: String::from("<string>"),
                 line: 0,
@@ -50,12 +67,12 @@ fn extract_annotations(content: &str, file_type: &str) -> PyResult<Vec<PyAnnotat
         "py" => FileType::Python,
         "rs" => FileType::Rust,
         "js" => FileType::JavaScript,
-        _ => FileType::Unknown,
+        _ => return Err(PyErr::new::<PyValueError, _>("Invalid file type")),
     };
 
     let dummy_path = std::path::PathBuf::from("<string>");
     let annotations = parser::extract_annotations(content, &ft, &dummy_path)
-        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))?;
+        .map_err(|e| PyErr::new::<PyValueError, _>(e.to_string()))?;
 
     Ok(annotations
         .into_iter()
@@ -66,6 +83,12 @@ fn extract_annotations(content: &str, file_type: &str) -> PyResult<Vec<PyAnnotat
                 file: a.location.file.to_string_lossy().into_owned(),
                 line: a.location.line,
                 inline: a.location.inline,
+            },
+            context: PyCitationContext {
+                node_type: a.context.node_type,
+                parent_type: a.context.parent_type,
+                associated_name: a.context.associated_name,
+                variable_name: a.context.variable_name,
             },
         })
         .collect())
@@ -82,6 +105,12 @@ fn format_annotations(annotations: Vec<PyAnnotation>, format: &str) -> PyResult<
                 file: std::path::PathBuf::from("<string>"),
                 line: 0,
                 inline: a.location.inline,
+            },
+            context: SyntaxContext {
+                node_type: a.context.node_type,
+                parent_type: a.context.parent_type,
+                associated_name: a.context.associated_name,
+                variable_name: a.context.variable_name,
             },
         })
         .collect();
