@@ -38,6 +38,9 @@ Repository = "https://github.com/flywhl/anot"
 Documentation = "https://github.com/flywhl/anot#readme"
 "Bug Tracker" = "https://github.com/flywhl/anot/issues"
 
+[project.scripts]
+anot = "anot.__init__:main"
+
 
 [tool.maturin]
 python-source = "python"

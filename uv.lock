@@ -1,9 +1,9 @@
 version = 1
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 
 [[package]]
 name = "anot"
-version = "0.1.0"
+version = "0.0.1"
 source = { virtual = "." }
 dependencies = [
     { name = "maturin" },

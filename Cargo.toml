@@ -8,13 +8,14 @@ name = "anot"
 crate-type = ["cdylib", "lib"]
 
 [dependencies]
-anyhow = "1.0.87"
+anyhow = "1.0.95"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 serde_yaml = "0.9"
-clap = { version = "4.3", features = ["derive"] }
+clap = { version = "4.5", features = ["derive"] }
 thiserror = "1.0"
-pyo3 = "0.23.3"
+pyo3 = "0.23.4"
+walkdir = "2.5.0"
 
 [features]
 extension-module = ["pyo3/extension-module"]
