@@ -46,3 +46,5 @@ lint-file file:
 watch:
     cargo watch -x test
 
+bump part:
+    cargo set-version --bump {{part}}
