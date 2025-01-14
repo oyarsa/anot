@@ -34,7 +34,12 @@ pub fn extract_annotations(
         .collect())
 }
 
-fn parse_annotation(line: &str, line_number: usize, file: &Path, is_inline: bool) -> Option<Annotation> {
+fn parse_annotation(
+    line: &str,
+    line_number: usize,
+    file: &Path,
+    is_inline: bool,
+) -> Option<Annotation> {
     let at_pos = line.find('@')?;
     let colon_pos = line[at_pos..].find(':')?;
 
