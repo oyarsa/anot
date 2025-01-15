@@ -20,8 +20,8 @@ class SyntaxContext:
         *,
         node_type: str,
         parent_type: str,
-        associated_name: Optional[str],
-        variable_name: Optional[str],
+        associated_name: Optional[str] = None,
+        variable_name: Optional[str] = None,
     ) -> None: ...
 
 class Location:
