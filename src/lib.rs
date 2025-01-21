@@ -1,6 +1,7 @@
 pub mod annotation;
 pub mod cli;
 pub mod error;
+pub mod hunks;
 pub mod input;
 pub mod parser;
 pub mod python;
